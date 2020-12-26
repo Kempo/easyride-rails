@@ -1,6 +1,7 @@
 # EasyRide
 
 Testing out a Ruby on Rails / React monolith with some GraphQL.
+
 Also SQL databases.
 
 `bundle exec rails server`

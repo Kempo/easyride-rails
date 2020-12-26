@@ -1,5 +1,5 @@
 import React from "react"
-import { ApolloProvider, ApolloClient, InMemoryCache, useQuery, gql } from "@apollo/client";
+import { ApolloClient, InMemoryCache, useQuery, gql } from "@apollo/client";
 
 const client = new ApolloClient({
   uri: '/graphql',
@@ -7,8 +7,16 @@ const client = new ApolloClient({
 });
 
 const QUERY = gql`
-  query allPosts {
+  query allPeople {
     allRiders {
+      name
+      address
+      preferences {
+        name
+        address
+      }
+    }
+    allDrivers {
       name
       address
       preferences {
