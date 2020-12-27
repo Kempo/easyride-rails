@@ -1,6 +1,5 @@
-# add riders_count to car table and delegate it to driver?
 class Car < ApplicationRecord
-  belongs_to :driver, inverse_of: :car, counter_cache: :riders_count
+  belongs_to :driver, inverse_of: :car
   has_many :riders, inverse_of: :car
 
   def has_space

@@ -10,12 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_25_035854) do
+ActiveRecord::Schema.define(version: 2020_12_27_031143) do
 
   create_table "cars", force: :cascade do |t|
     t.integer "driver_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "riders_count", default: 0
     t.index ["driver_id"], name: "index_cars_on_driver_id"
   end
 
@@ -25,7 +26,6 @@ ActiveRecord::Schema.define(version: 2020_12_25_035854) do
     t.integer "total_space", default: 0
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "riders_count", default: 0
   end
 
   create_table "preferences", force: :cascade do |t|
