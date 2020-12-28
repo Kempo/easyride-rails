@@ -13,7 +13,13 @@ const QUERY = gql`
       address
       preferences {
         name
-        address
+      }
+    }
+    allDrivers {
+      name
+      address
+      preferences {
+        name
       }
     }
   }
@@ -40,6 +46,14 @@ function Overview({ someParam }) {
         {
         data && data.allRiders.map(rider => 
             <li key={rider.name}>{rider.name} / {rider.address}</li>
+          )
+        }
+      </ul>
+      <p>Drivers ({data && data.allDrivers.length}):</p>
+      <ul>
+        {
+        data && data.allDrivers.map(driver => 
+            <li key={driver.name}>{driver.name} / {driver.address}</li>
           )
         }
       </ul>
