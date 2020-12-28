@@ -1,8 +1,14 @@
 # EasyRide
 
-Testing out a Ruby on Rails / React monolith with some GraphQL.
+Ride organizing application for large events.
 
-Also SQL databases.
+Connects riders with drivers and creates assignments based on distance.
+
+## Stack
+- Ruby on Rails
+- React.js 
+- Apollo GraphQL 
+## Commands
 
 `bundle exec rails server`
 
