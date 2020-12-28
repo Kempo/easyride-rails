@@ -6,7 +6,7 @@ class Rider < Person
 
   scope :unassigned, -> { where(car: nil) }
 
-  def prefers_strongest(driver:)
+  def prefers_strongest?(driver:)
     preferences.where('riders_count < total_space') == driver
   end
 end

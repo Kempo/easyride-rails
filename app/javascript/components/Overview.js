@@ -16,14 +16,6 @@ const QUERY = gql`
         address
       }
     }
-    allDrivers {
-      name
-      address
-      preferences {
-        name
-        address
-      }
-    }
   }
 `;
 
