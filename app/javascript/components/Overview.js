@@ -6,7 +6,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-const QUERY = gql`
+const ALL_PEOPLE = gql`
   query allPeople {
     allRiders {
       name
@@ -25,9 +25,22 @@ const QUERY = gql`
   }
 `;
 
+const ALL_ASSIGNMENTS = gql`
+  query fetchAssignments {
+    organize {
+      driver {
+        name
+      }
+      riders {
+        name
+      }
+    }
+  }
+`;
+
 function Overview({ someParam }) {
 
-  const { loading, error, data } = useQuery(QUERY, { client });
+  const { loading, error, data } = useQuery(ALL_PEOPLE, { client });
 
   if (loading) {
     return <div>Loading...</div>
@@ -57,6 +70,11 @@ function Overview({ someParam }) {
           )
         }
       </ul>
+      <form>
+        <input type="text" placeholder="Name" />
+        <input type="text" placeholder="Address" />
+        <input type="submit" value="Submit" />
+      </form>
     </div>
   )
 }

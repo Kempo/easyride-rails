@@ -21,10 +21,31 @@ module Types
     end
 
     def organize
-      # clear all car occupants
-      # TODO: match riders and drivers
-      
-      nil
+      # TODO: fix preference seeding
+
+      # TODO: reduce SQL queries? (car query + driver.available)
+      Car.where('riders_count > 0').find_each do |car|
+        car.clear_space
+      end
+
+      untaken = Rider.unassigned
+      drivers = Driver.available # use Car query here?
+
+      # assume enough seats for all riders
+      while untaken.reload.size > 0
+        cur = untaken.first
+
+        drivers.reload.each do |driver|
+          if cur.prefers_strongest?(driver: driver)
+            puts "Rider #{cur.name} to #{driver.name}"
+            driver.add_passenger(rider: cur)
+          end
+        end
+
+        untaken.rotate! if cur.car.nil?
+      end
+
+      Car.all
     end
   end
 end
