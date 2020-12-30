@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react";
 import { ApolloClient, InMemoryCache, useQuery, gql } from "@apollo/client";
 
 const client = new ApolloClient({
@@ -38,7 +38,44 @@ const ALL_ASSIGNMENTS = gql`
   }
 `;
 
-function Overview({ someParam }) {
+function Overview() {
+
+  const [newParticipant, setParticipant] = useState({
+    name: '',
+    address: '',
+    type: 'rider',
+    totalSpace: 0,
+    preferences: []
+  });
+
+  const onChange = ({ target }) => {
+    const origin = target.name;
+    const value = transform(origin, target.value);
+
+    // fix typing
+    setParticipant({
+      ...newParticipant,
+      [origin]: value, 
+    })
+  }
+
+  const transform = (origin, val) => {
+    console.log(origin)
+
+    switch (origin) {
+      case origin == 'totalSpace':
+        return parseInt(val)
+      case origin == 'preferences':
+        return val.split(',').map(el => parseInt(el.trim()))
+      default: 
+        return val
+    }
+  }
+
+  const onAddParticipant = (event) => {
+    event.preventDefault();
+    console.log(newParticipant);
+  }
 
   const { loading, error, data } = useQuery(ALL_PEOPLE, { client });
 
@@ -52,8 +89,7 @@ function Overview({ someParam }) {
 
   return (
     <div>
-      <h1>Assignments</h1>
-      <p>Aaron Chen (Status: {someParam ? 'Signed in.' : 'Unauthenticated.'})</p>
+      <h1>Participants</h1>
       <p>Riders ({data && data.allRiders.length}):</p>
       <ul>
         {
@@ -70,11 +106,22 @@ function Overview({ someParam }) {
           )
         }
       </ul>
-      <form>
-        <input type="text" placeholder="Name" />
-        <input type="text" placeholder="Address" />
+      <form onSubmit={onAddParticipant}>
+        <h3>Add Participant</h3>
+        <input name="name" type="text" onChange={onChange} value={newParticipant.name} placeholder="Name" />
+        <input name="address" type="text" onChange={onChange} value={newParticipant.address} placeholder="Address" />
+        <select name="type" onChange={onChange} value={newParticipant.type}>
+          <option value="rider">Rider</option>
+          <option value="driver">Driver</option>
+        </select>
+        <input name="totalSpace" disabled={newParticipant.type == 'rider'} onChange={onChange} value={newParticipant.totalSpace} min={0} max={100} type="number" />
+        <input name="preferences" value={newParticipant.preferences.toString()} onChange={onChange} type="text" placeholder="1, 2, 3" />
         <input type="submit" value="Submit" />
       </form>
+      <div>
+        <h3>Car Assignments</h3>
+        <p>...</p>
+      </div>
     </div>
   )
 }

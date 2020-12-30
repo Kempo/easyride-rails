@@ -9,6 +9,7 @@ module Mutations
     field :rider, Types::RiderType, null: true
     field :errors, [String], null: false
   
+    # TODO: ideally, we'd auto-generate preferences on model creation
     def resolve(name:, address:, preferences:)
       matched = Driver.where(id: preferences)
   

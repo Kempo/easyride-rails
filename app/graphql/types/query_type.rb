@@ -21,8 +21,6 @@ module Types
     end
 
     def organize
-      # TODO: fix preference seeding
-
       # TODO: reduce SQL queries? (car query + driver.available)
       Car.where('riders_count > 0').find_each do |car|
         car.clear_space
@@ -37,7 +35,6 @@ module Types
 
         drivers.reload.each do |driver|
           if cur.prefers_strongest?(driver: driver)
-            puts "Rider #{cur.name} to #{driver.name}"
             driver.add_passenger(rider: cur)
           end
         end

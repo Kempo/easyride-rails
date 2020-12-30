@@ -10,6 +10,7 @@ module Mutations
     field :driver, Types::DriverType, null: true
     field :errors, [String], null: false
   
+    # TODO: ideally, we'd auto-generate preferences on model creation
     def resolve(name:, address:, preferences:, total_space:)
       matched = Rider.where(id: preferences)
   
@@ -19,7 +20,6 @@ module Mutations
           errors: ['There is an invalid id provided in the preferences.']
         }
       end
-      
   
       driver = Driver.create(
         name: name, 
