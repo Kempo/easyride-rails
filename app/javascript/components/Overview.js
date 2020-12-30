@@ -52,7 +52,6 @@ function Overview() {
     const origin = target.name;
     const value = transform(origin, target.value);
 
-    // fix typing
     setParticipant({
       ...newParticipant,
       [origin]: value, 
@@ -63,18 +62,19 @@ function Overview() {
     console.log(origin)
 
     switch (origin) {
-      case origin == 'totalSpace':
-        return parseInt(val)
-      case origin == 'preferences':
-        return val.split(',').map(el => parseInt(el.trim()))
+      case 'totalSpace':
+        return parseInt(val);
+      case 'preferences':
+        return val.split(',').map(el => (el.trim())) // TODO: tidy
       default: 
-        return val
+        return val;
     }
   }
 
   const onAddParticipant = (event) => {
     event.preventDefault();
     console.log(newParticipant);
+
   }
 
   const { loading, error, data } = useQuery(ALL_PEOPLE, { client });
