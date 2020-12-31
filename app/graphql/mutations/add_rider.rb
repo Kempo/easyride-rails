@@ -4,30 +4,23 @@ module Mutations
   
     argument :name, String, required: true
     argument :address, String, required: true
-    argument :preferences, [ID], required: true # array of ids?
+    argument :preferences, [ID], required: true
   
     field :rider, Types::RiderType, null: true
     field :errors, [String], null: false
   
-    # TODO: ideally, we'd auto-generate preferences on model creation
     def resolve(name:, address:, preferences:)
+      # TODO: ideally, we'd auto-generate preferences on model creation
       matched = Driver.where(id: preferences)
-  
-      if matched.length != preferences.length
-        {
-          rider: nil,
-          errors: ['There is an invalid id provided in the preferences.']
-        }
-      end
       
-      rider = Rider.create(name: name, address: address, car: nil)
+      rider = Rider.build(name: name, address: address, car: nil)
   
       return {
         rider: nil,
-        errors: rider.errors.full_messages
-      } unless rider
+        errors: rider.errors.full_messages # add pref error msg
+      } unless matched.length == preferences.length && rider.save
       
-      # yikes! TODO: fix.
+      # TODO: simplify.
       matched.each do |driver|
         Preference.create(
           preferrer: rider,

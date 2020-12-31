@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { ApolloClient, InMemoryCache, useQuery, gql } from "@apollo/client";
+import { ApolloClient, InMemoryCache, useQuery, useLazyQuery, gql } from "@apollo/client";
+import "./Overview.css";
 
 const client = new ApolloClient({
   uri: '/graphql',
@@ -25,9 +26,10 @@ const ALL_PEOPLE = gql`
   }
 `;
 
-const ALL_ASSIGNMENTS = gql`
+const ASSIGN_PARTICIPANTS = gql`
   query fetchAssignments {
     organize {
+      id
       driver {
         name
       }
@@ -78,6 +80,7 @@ function Overview() {
   }
 
   const { loading, error, data } = useQuery(ALL_PEOPLE, { client });
+  const [getAssignments, { loading: loadingAssignments, data: assignments }] = useLazyQuery(ASSIGN_PARTICIPANTS, { client });
 
   if (loading) {
     return <div>Loading...</div>
@@ -116,11 +119,17 @@ function Overview() {
         </select>
         <input name="totalSpace" disabled={newParticipant.type == 'rider'} onChange={onChange} value={newParticipant.totalSpace} min={0} max={100} type="number" />
         <input name="preferences" value={newParticipant.preferences.toString()} onChange={onChange} type="text" placeholder="1, 2, 3" />
-        <input type="submit" value="Submit" />
+        <input type="submit" value="Add" />
       </form>
+      <button onClick={() => getAssignments()}>Organize</button>
       <div>
         <h3>Car Assignments</h3>
-        <p>...</p>
+        {loadingAssignments && <p>Loading...</p>}
+        <ul>
+          {assignments && assignments.organize.map(car => 
+            <li key={car.id}>{car.driver.name}: {car.riders.map(rider => rider.name)}</li>
+          )}
+        </ul>
       </div>
     </div>
   )
