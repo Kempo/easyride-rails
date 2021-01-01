@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { ApolloClient, InMemoryCache, useQuery, useLazyQuery, gql } from "@apollo/client";
-import "./Overview.css";
+import Avatar from "./Avatar";
+import styles from "./overview.module.css";
 
+// NOTE: if this wasn't a SPA, ideally we'd include it in the router setup
+// and pass it down using ApolloProvider
 const client = new ApolloClient({
   uri: '/graphql',
   cache: new InMemoryCache()
@@ -10,6 +13,7 @@ const client = new ApolloClient({
 const ALL_PEOPLE = gql`
   query allPeople {
     allRiders {
+      id
       name
       address
       preferences {
@@ -17,6 +21,7 @@ const ALL_PEOPLE = gql`
       }
     }
     allDrivers {
+      id
       name
       address
       preferences {
@@ -67,7 +72,7 @@ function Overview() {
       case 'totalSpace':
         return parseInt(val);
       case 'preferences':
-        return val.split(',').map(el => (el.trim())) // TODO: tidy
+        return val.split(',').map(el => (el.trim())) // TODO: tidy up edge case
       default: 
         return val;
     }
@@ -77,6 +82,7 @@ function Overview() {
     event.preventDefault();
     console.log(newParticipant);
 
+    // TODO: add mutation
   }
 
   const { loading, error, data } = useQuery(ALL_PEOPLE, { client });
@@ -91,45 +97,51 @@ function Overview() {
   }
 
   return (
-    <div>
-      <h1>Participants</h1>
-      <p>Riders ({data && data.allRiders.length}):</p>
-      <ul>
-        {
-        data && data.allRiders.map(rider => 
-            <li key={rider.name}>{rider.name} / {rider.address}</li>
-          )
-        }
-      </ul>
-      <p>Drivers ({data && data.allDrivers.length}):</p>
-      <ul>
-        {
-        data && data.allDrivers.map(driver => 
-            <li key={driver.name}>{driver.name} / {driver.address}</li>
-          )
-        }
-      </ul>
-      <form onSubmit={onAddParticipant}>
-        <h3>Add Participant</h3>
-        <input name="name" type="text" onChange={onChange} value={newParticipant.name} placeholder="Name" />
-        <input name="address" type="text" onChange={onChange} value={newParticipant.address} placeholder="Address" />
-        <select name="type" onChange={onChange} value={newParticipant.type}>
-          <option value="rider">Rider</option>
-          <option value="driver">Driver</option>
-        </select>
-        <input name="totalSpace" disabled={newParticipant.type == 'rider'} onChange={onChange} value={newParticipant.totalSpace} min={0} max={100} type="number" />
-        <input name="preferences" value={newParticipant.preferences.toString()} onChange={onChange} type="text" placeholder="1, 2, 3" />
-        <input type="submit" value="Add" />
-      </form>
-      <button onClick={() => getAssignments()}>Organize</button>
-      <div>
-        <h3>Car Assignments</h3>
-        {loadingAssignments && <p>Loading...</p>}
+    <div className={styles.main}>
+      <div className={styles.layout}>
+        <h1>Participants</h1>
+        <p><b>Riders ({data && data.allRiders.length}):</b></p>
         <ul>
-          {assignments && assignments.organize.map(car => 
-            <li key={car.id}>{car.driver.name}: {car.riders.map(rider => rider.name)}</li>
-          )}
+          {
+          data && data.allRiders.map(rider => 
+              <li key={rider.id}>
+                <Avatar id={rider.id} name={rider.name} address={rider.address} />
+              </li>
+            )
+          }
         </ul>
+        <p><b>Drivers ({data && data.allDrivers.length}):</b></p>
+        <ul>
+          {
+          data && data.allDrivers.map(driver => 
+              <li key={driver.name}>
+                <Avatar id={driver.id} name={driver.name} address={driver.address} />
+              </li>
+            )
+          }
+        </ul>
+        <form className={styles.form} onSubmit={onAddParticipant}>
+          <h3>Add Participant</h3>
+          <input name="name" type="text" onChange={onChange} value={newParticipant.name} placeholder="Name" />
+          <input name="address" type="text" onChange={onChange} value={newParticipant.address} placeholder="Address" />
+          <select name="type" onChange={onChange} value={newParticipant.type}>
+            <option value="rider">Rider</option>
+            <option value="driver">Driver</option>
+          </select>
+          <input name="totalSpace" disabled={newParticipant.type == 'rider'} onChange={onChange} value={newParticipant.totalSpace} min={0} max={100} type="number" />
+          <input name="preferences" value={newParticipant.preferences.toString()} onChange={onChange} type="text" placeholder="1, 2, 3" />
+          <input type="submit" value="Add" />
+        </form>
+        <button onClick={() => getAssignments()}>Organize</button>
+        <div>
+          <h3>Car Assignments</h3>
+          {loadingAssignments && <p>Loading...</p>}
+          <ul>
+            {assignments && assignments.organize.map(car => 
+              <li key={car.id}>{car.driver.name}: {car.riders.map(rider => rider.name)}</li>
+            )}
+          </ul>
+        </div>
       </div>
     </div>
   )

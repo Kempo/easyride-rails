@@ -1,0 +1,25 @@
+.main {
+  display: flex;
+  justify-content: center;
+}
+
+.layout {
+  width: 100%;
+  max-width: 1000px;
+}
+
+.form {
+  padding: 10px 0px;
+}
+
+ul {
+  display: flex;
+  list-style-type: none;
+  padding: 5px 0px;
+  margin: 0px;
+}
+
+li {
+  width: 100px;
+  text-align: center;
+}
