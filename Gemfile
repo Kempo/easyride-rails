@@ -5,6 +5,7 @@ ruby '2.7.0'
 
 gem 'react-rails'
 gem "graphql"
+gem 'graphql-batch'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.1.0'
