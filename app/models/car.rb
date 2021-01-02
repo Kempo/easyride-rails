@@ -8,7 +8,7 @@ class Car < ApplicationRecord
   validates :riders, length: { maximum: :total_space }
 
   def has_space?
-    riders.size < total_space # FIX: get total_space from Driver 
+    riders.size < total_space
   end
 
   def clear_space
