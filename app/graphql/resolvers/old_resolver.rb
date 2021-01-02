@@ -14,16 +14,13 @@
 #  not supported: (because their response is not obvious)
 #  - [ ] [ :assoc, { assoc: :assoc } }
 #  - [ ] [ { assoc: :assoc }, { assoc: :assoc } }
-class Resolvers::AssociationResolver < Resolvers::BaseResolver
-  type [Types::DriverType], null: false
-
-  # preload = association (eg. has_many)
-  def initialize(preload, &block)
-    @preload = normalize_preloads(preload)
-    @handler = block || DefaultHandler
-  end
+class Resolvers::OldResolver < Resolvers::BaseResolver
+  type [Types::Person], null: false
 
   def resolve
+    @preload = normalize_preloads(:preferences)
+    @handler = DefaultHandler
+
     return unless object.present?
     next_step preload.dup, object, object
   end
@@ -55,7 +52,6 @@ class Resolvers::AssociationResolver < Resolvers::BaseResolver
   def normalize_preloads(preloads)
     if preloads.is_a? Hash
       keys = preloads.keys
-      puts "HELLO! #{keys.inspect}"
       raise NotSupported, 'only one nested association supported currently' unless keys.size == 1
       first_key = keys.first
       [first_key] + normalize_preloads(preloads[first_key])
