@@ -9,4 +9,8 @@ class Rider < Person
   def prefers_strongest?(driver:)
     preferences.available.first == driver
   end
+
+  def is_taken?
+    car.nil?
+  end
 end
