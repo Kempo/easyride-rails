@@ -36,7 +36,7 @@ module Types
           end
         end
 
-        untaken.rotate! if cur.car.nil?
+        untaken.rotate! if cur.is_taken?
       end
 
       Car.all
