@@ -7,6 +7,7 @@ class Driver < Person
 
   after_create :create_car!
 
+  # NOTE: avoid join?
   scope :available, -> { joins(:car).where('riders_count < ?', :total_space) }
 
   def clear_space

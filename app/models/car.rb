@@ -10,9 +10,4 @@ class Car < ApplicationRecord
   def has_space?
     riders.size < total_space
   end
-
-  # remove?
-  def clear_space
-    riders.delete_all
-  end
 end
