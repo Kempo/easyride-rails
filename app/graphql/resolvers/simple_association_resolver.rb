@@ -3,8 +3,10 @@ module Resolvers
     type [Types::Person], null: false
 
     def resolve 
+      target = object.is_a?(Car) ? :riders : :preferences
+
       # object = record
-      loader = PreferenceLoader.for(object.class, :preferences).load(object)
+      loader = PreferenceLoader.for(object.class, target).load(object)
     end
 
     # Loaders represent promises and mechanism to 
