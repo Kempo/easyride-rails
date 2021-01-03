@@ -9,6 +9,10 @@ class Driver < Person
 
   scope :available, -> { joins(:car).where('riders_count < ?', :total_space) }
 
+  def clear_space
+    riders.delete_all if riders_count > 0
+  end
+
   def add_passenger(rider:)
     riders << rider if car.has_space?
   end

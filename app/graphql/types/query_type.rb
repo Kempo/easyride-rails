@@ -21,19 +21,16 @@ module Types
     end
 
     def organize
-      # TODO: reduce SQL queries? (car query + driver.available)
-      Car.where('riders_count > 0').find_each do |car|
-        car.clear_space
-      end
+      Driver.find_each(&:clear_space)
 
       untaken = Rider.unassigned
-      drivers = Driver.available # use Car query here?
+      open_drivers = Driver.available
 
       # assume enough seats for all riders
       while untaken.reload.size > 0
         cur = untaken.first
 
-        drivers.reload.each do |driver|
+        open_drivers.reload.each do |driver|
           if cur.prefers_strongest?(driver: driver)
             driver.add_passenger(rider: cur)
           end
